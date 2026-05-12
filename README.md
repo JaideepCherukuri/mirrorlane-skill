@@ -249,13 +249,16 @@ For Claude Code installations where the slash command is available:
 2. **Capture** the target URL with `mirrorlane capture <url> --wait --json`.
 3. **Download references** with `mirrorlane reference <job-id> --out ...`.
 4. **Extract the clean ZIP** into the project research folder.
-5. **Inspect live, preview, and clean artifacts** across desktop, tablet, and
+5. **Map clean ZIP URLs to local assets** so captured fonts, images, videos,
+   SVGs, and CSS are served from the generated app whenever Mirrorlane captured
+   them locally.
+6. **Inspect live, preview, and clean artifacts** across desktop, tablet, and
    mobile viewports.
-6. **Port exact DOM/CSS behavior first**, then refactor into maintainable
+7. **Port exact DOM/CSS behavior first**, then refactor into maintainable
    Next.js components.
-7. **Validate with screenshots and pixel diffs** against the live site and
+8. **Validate with screenshots and pixel diffs** against the live site and
    Mirrorlane reference.
-8. **Iterate from root causes** until the clone passes the parity gate.
+9. **Iterate from root causes** until the clone passes the parity gate.
 
 The skill is intentionally strict: agents should not paste one giant captured
 HTML document as the final result. The expected output is a development-friendly

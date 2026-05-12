@@ -71,16 +71,21 @@ mirrorlane reference <job-id> --out docs/mirrorlane/<hostname> --json
    If the clean ZIP is missing or cannot be downloaded, stop and report the
    Mirrorlane artifact failure. Do not substitute a live-site-only handcrafted
    approximation; the clean ZIP is the primary source artifact for this skill.
-7. Verify the base Next.js project builds:
+7. Build a local URL map before coding. Read
+   `docs/mirrorlane/<hostname>/clean/metadata/url-map.json` and create
+   `docs/research/<hostname>/URL_MAP.md` with source URL -> clean ZIP export
+   path mappings for CSS, images, videos, fonts, SVGs, scripts that affect
+   visible behavior, and route HTML.
+8. Verify the base Next.js project builds:
 
 ```bash
 npm run build
 ```
 
-8. Create the working directories if missing:
+9. Create the working directories if missing:
    `docs/research/`, `docs/research/components/`,
    `docs/design-references/`, `scripts/`, `public/`.
-9. For multiple URLs, prepare per-site folders such as
+10. For multiple URLs, prepare per-site folders such as
    `docs/research/<hostname>/`, `docs/design-references/<hostname>/`, and
    `docs/mirrorlane/<hostname>/`.
 
@@ -106,6 +111,13 @@ The clean ZIP is not mood-board material. Treat it as the source of exact
 truth for DOM hierarchy, CSS, fonts, media, SVGs, image crops, script-driven
 states, and route behavior. Start by mapping the clean ZIP's `site/`,
 `vendor/`, `data/`, and `metadata/url-map.json` into the Next.js project.
+
+Every visible remote asset URL in the captured HTML or CSS must be resolved
+through `metadata/url-map.json` and copied into `public/<hostname>/...` when a
+local clean ZIP export exists. Do not leave Webflow, WordPress, Framer,
+Elementor, CDN image, font, or video URLs in the clone when Mirrorlane captured
+that asset locally. If a remote URL has no captured mapping, document it as an
+external dependency in `URL_MAP.md` before using it.
 
 The first implementation goal is a loss-minimized reconstruction of the first
 viewport using the captured DOM/CSS/assets. Only after the first viewport
@@ -133,6 +145,14 @@ resets that shift the first viewport. Start from the selectors that match the
 captured DOM slice plus required global tokens/font-face/keyframes. If a broad
 CSS import worsens the diff, treat that as CSS over-application and reduce the
 stylesheet to the matched first-viewport rules.
+
+For Webflow and similar generated sites, inspect the captured `site/*.html`
+first. Extract the real section wrapper classes, nested element classes,
+inline SVGs, inline styles, stylesheet links, font-face rules, variables, and
+media queries before opening a blank component. A handcrafted Tailwind hero
+that merely looks similar is a failed first pass; the first pass should preserve
+the original class topology and exact local assets, then become cleaner React
+only after the diff is already below the threshold.
 
 Only after the exact port is under 1% mismatch may you improve maintainability:
 split the JSX into named components, move repeated text into typed content,
@@ -255,6 +275,9 @@ site, hosted preview, and later local clone comparisons.
 Before building sections, extract and document:
 
 - **Fonts:** families, weights, styles, source, and computed usage.
+- **Local asset mapping:** every CSS, image, video, SVG, and font URL used in
+  the first viewport, mapped from the original URL to its clean ZIP export path
+  and final `public/<hostname>/...` path.
 - **Colors:** computed color palette across body, headings, CTAs, sections,
   cards, borders, shadows, and gradients.
 - **Favicons and metadata:** copy from the clean ZIP or download from the live
@@ -303,8 +326,10 @@ Do this yourself before dispatching builders:
    without renaming away meaning.
 3. Port the original CSS values, variables, font faces, and keyframes before
    writing JSX. The clone should inherit measured values, not approximate them.
-4. Configure fonts in `app/layout.tsx` using `next/font/google`,
-   `next/font/local`, or CSS `@font-face` from local assets.
+4. Configure fonts in `app/layout.tsx` or CSS using the exact captured font
+   source. Prefer `next/font/local` or CSS `@font-face` from local clean ZIP
+   assets. Use `next/font/google` only when the clean ZIP did not capture the
+   font files and the live site itself uses Google Fonts.
 5. Update `app/globals.css` with real tokens, background styles, keyframes,
    page-level behavior, and utility classes.
 6. Create TypeScript content types in `types/` or `lib/content.ts`.
