@@ -105,34 +105,53 @@ Componentized does not mean hand-redesigned. Good components preserve the
 original DOM shape, CSS values, asset layering, and behavior while moving them
 into maintainable React files and typed content modules.
 
-### 2. Completeness Beats Speed
+### 2. Exact Port Before Interpretation
+
+For high-fidelity sites, the first React implementation should look like a
+careful port, not a redesign. Convert the captured section DOM into JSX with
+the same wrapper depth, class names, inline SVGs, absolute layers,
+pseudo-element hooks, ARIA attributes, and asset ordering. Import or port the
+original CSS cascade that applies to that DOM slice, including media queries,
+variables, keyframes, and `::before`/`::after` styles.
+
+Only after the exact port is under 1% mismatch may you improve maintainability:
+split the JSX into named components, move repeated text into typed content,
+rename local assets, and remove dead classes. After every cleanup step, rerun
+the diff. If a cleanup increases mismatch beyond 1%, revert or refine that
+cleanup.
+
+Do not summarize a WordPress, Webflow, Framer, Elementor, Vite, or custom
+runtime page into a simplified handcrafted hero. That is the most common reason
+agents fail this task.
+
+### 3. Completeness Beats Speed
 
 Every builder must receive everything needed to build perfectly: screenshot,
 computed CSS values, local asset paths, real text, component structure, states,
 and behavior notes. If a builder has to guess a color, padding value, image, or
 trigger condition, extraction was incomplete.
 
-### 3. Small Tasks, Perfect Results
+### 4. Small Tasks, Perfect Results
 
 Break complex sections into focused component jobs. A simple banner can go to
 one builder; a section with several card types, hover states, and responsive
 layouts should be split into card builders plus a wrapper builder. If a builder
 prompt grows past about 150 lines of spec content, split the task.
 
-### 4. Real Content, Real Assets
+### 5. Real Content, Real Assets
 
 Use real text, images, videos, SVGs, and fonts from the Mirrorlane clean ZIP and
 live page inspection. Do not replace captured content with generic copy. Watch
 for layered compositions: one visual block may include a background image,
 foreground UI image, overlay icons, gradients, videos, and inline SVGs.
 
-### 5. Foundation First
+### 6. Foundation First
 
 Do not build sections before the foundation exists: fonts, design tokens,
 global CSS, metadata, asset conventions, TypeScript content types, and shared
 icons. This foundation is sequential work. Everything after it can be parallel.
 
-### 6. Extract Looks And Behavior
+### 7. Extract Looks And Behavior
 
 Websites are not still images. Extract computed appearance and behavior:
 scroll effects, hover states, click states, sticky headers, tab changes,
@@ -142,7 +161,7 @@ modals, accordions, and responsive layout changes.
 For every behavior, document the trigger, before state, after state, transition
 duration, easing, and implementation model.
 
-### 7. Identify The Interaction Model Before Building
+### 8. Identify The Interaction Model Before Building
 
 Before writing a spec for an interactive section, decide whether it is driven by
 scroll, clicks, hover, time, media playback, or a combination. Scroll slowly
@@ -150,20 +169,20 @@ first. If the section changes while scrolling, document the scroll mechanism
 before trying clicks. Do not build click-driven tabs when the original is
 scroll-driven, or vice versa.
 
-### 8. Extract Every State
+### 9. Extract Every State
 
 Default state is not enough. For tabs, pills, accordions, menus, cards,
 headers, and forms, capture every state. For scroll-dependent elements, capture
 computed styles before and after the trigger. For hover states, capture both
 states and the transition.
 
-### 9. Spec Files Are The Source Of Truth
+### 10. Spec Files Are The Source Of Truth
 
 Every component gets a spec file in `docs/research/components/` before any
 builder is dispatched. The builder receives the spec content inline in the
 prompt. The spec file persists as an audit trail.
 
-### 10. Build Must Always Compile
+### 11. Build Must Always Compile
 
 Every builder verifies `npx tsc --noEmit` before finishing. After merging
 builders, verify `npm run build`. Broken builds are not acceptable stopping
@@ -194,6 +213,11 @@ Repeat for tablet and mobile. Save the JSON output in
 
 If hosted preview is below 1% mismatch but the local clone is not, the root
 cause is in the clone workflow, not Mirrorlane capture.
+
+If hosted preview renders an auth/login page, dashboard shell, error page, or
+anything other than the target website, mark hosted preview as `invalid` for
+visual parity and use the clean ZIP local replay as the artifact oracle. Do not
+compare a login page to the clone.
 
 ### Screenshots
 
@@ -277,6 +301,39 @@ npm run build
 Do not proceed to lower-page sections until the above-the-fold local clone
 passes the parity gate against hosted preview or has a written root-cause report
 with exact blockers.
+
+## Phase 2.5: First Viewport Exact Port
+
+For the first viewport, do not start with a fresh design-system hero. First,
+port the captured DOM/CSS exactly enough to pass the diff gate.
+
+1. Open `docs/mirrorlane/<hostname>/clean/site/index.html` or the relevant
+   clean route HTML.
+2. Identify all DOM nodes visible in the first viewport, including fixed
+   headers, overlays, chat buttons, cookie banners, hidden menu scaffolding,
+   background layers, decorative wrappers, and SVG definitions.
+3. Copy that DOM slice into a draft file and convert it to JSX:
+   - `class` -> `className`
+   - `for` -> `htmlFor`
+   - inline `style` -> React style object only when needed
+   - preserve wrapper depth and class names
+   - preserve data attributes used by CSS/JS state
+4. Port every CSS rule that can affect that slice:
+   - global variables
+   - imported font faces
+   - exact class selectors
+   - descendant selectors
+   - pseudo-elements
+   - media queries
+   - keyframes and animation defaults
+5. Replace source URLs with local `public/` asset paths using
+   `metadata/url-map.json`.
+6. Build and diff against clean replay.
+7. Only then split the JSX into named React components while keeping DOM output
+   equivalent.
+
+The component spec must include the source DOM selectors and source CSS files
+used. A spec that only describes the appearance is insufficient for this phase.
 
 ## Asset Discovery Pattern
 
