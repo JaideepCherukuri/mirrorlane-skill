@@ -1,6 +1,9 @@
-# Mirrorlane Clone Website Rule (Windsurf)
-
-Apply these instructions when rebuilding a website from Mirrorlane artifacts.
+---
+name: mirrorlane-clone
+description: Clone one or more public websites as pixel-perfect, componentized Next.js/Tailwind builds using Mirrorlane CLI reference artifacts. Use this whenever the user wants to clone, replicate, rebuild, reverse-engineer, copy, or pixel-match a website with Mirrorlane. Provide one or more target URLs as arguments.
+argument-hint: "<url> [more-urls...]"
+user-invocable: true
+---
 
 # Mirrorlane Clone
 

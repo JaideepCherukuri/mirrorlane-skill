@@ -1,11 +1,11 @@
 ---
-name: clone-website
+name: mirrorlane-clone
 description: Clone one or more public websites as pixel-perfect, componentized Next.js/Tailwind builds using Mirrorlane CLI reference artifacts. Use this whenever the user wants to clone, replicate, rebuild, reverse-engineer, copy, or pixel-match a website with Mirrorlane. Provide one or more target URLs as arguments.
 argument-hint: "<url> [more-urls...]"
 user-invocable: true
 ---
 
-# Clone Website
+# Mirrorlane Clone
 
 You are about to rebuild **$ARGUMENTS** as pixel-perfect website clones. When
 multiple URLs are provided, process them independently and in parallel where
@@ -47,7 +47,7 @@ User instructions override these defaults.
 3. Verify Mirrorlane authentication:
 
 ```bash
-mirrorlane doctor --json
+mirrorlane auth --json
 ```
 
 4. For each URL, run Mirrorlane capture and wait for completion:
@@ -216,9 +216,9 @@ Use the bundled helper scripts if this skill repo is available:
 
 ```bash
 npm install -D playwright pixelmatch pngjs
-node skill/clone-website/scripts/capture-viewports.mjs <live-url> docs/design-references/<hostname>/live
-node skill/clone-website/scripts/capture-viewports.mjs <hosted-preview-url> docs/design-references/<hostname>/hosted
-node skill/clone-website/scripts/pixel-diff.mjs docs/design-references/<hostname>/hosted/desktop.png docs/design-references/<hostname>/live/desktop.png docs/design-references/<hostname>/diffs/hosted-live-desktop.png
+node skills/mirrorlane-clone/scripts/capture-viewports.mjs <live-url> docs/design-references/<hostname>/live
+node skills/mirrorlane-clone/scripts/capture-viewports.mjs <hosted-preview-url> docs/design-references/<hostname>/hosted
+node skills/mirrorlane-clone/scripts/pixel-diff.mjs docs/design-references/<hostname>/hosted/desktop.png docs/design-references/<hostname>/live/desktop.png docs/design-references/<hostname>/diffs/hosted-live-desktop.png
 ```
 
 Repeat for tablet and mobile. Save the JSON output in

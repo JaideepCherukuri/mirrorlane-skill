@@ -2,6 +2,7 @@
   "name": "mirrorlane-skill",
   "version": "0.1.0",
   "description": "Public agent skill and thin CLI for using Mirrorlane website capture artifacts.",
+  "license": "MIT",
   "type": "module",
   "bin": {
     "mirrorlane": "./bin/mirrorlane.mjs"
@@ -15,6 +16,7 @@
     "bin",
     "lib",
     "skill",
+    "skills",
     ".claude",
     ".codex",
     ".cursor",

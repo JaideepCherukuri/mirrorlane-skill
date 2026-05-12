@@ -2,13 +2,15 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
-const source = path.join(root, "skill", "clone-website", "SKILL.md");
+const skillName = "mirrorlane-clone";
+const source = path.join(root, "skill", skillName, "SKILL.md");
 const body = await fs.readFile(source, "utf8");
-const sourceScriptsDir = path.join(root, "skill", "clone-website", "scripts");
+const sourceScriptsDir = path.join(root, "skill", skillName, "scripts");
 
 const targets = [
-  [".claude/skills/clone-website/SKILL.md", body],
-  [".codex/skills/clone-website/SKILL.md", body],
+  [`skills/${skillName}/SKILL.md`, body],
+  [`.claude/skills/${skillName}/SKILL.md`, body],
+  [`.codex/skills/${skillName}/SKILL.md`, body],
   ["AGENTS.md", wrapPlain("AGENTS", body)],
   ["CLAUDE.md", wrapPlain("Claude Code", body)],
   ["GEMINI.md", wrapPlain("Gemini", body)],
@@ -28,8 +30,9 @@ for (const [target, content] of targets) {
 }
 
 for (const targetDir of [
-  ".claude/skills/clone-website/scripts",
-  ".codex/skills/clone-website/scripts",
+  `skills/${skillName}/scripts`,
+  `.claude/skills/${skillName}/scripts`,
+  `.codex/skills/${skillName}/scripts`,
 ]) {
   await fs.rm(path.join(root, targetDir), { force: true, recursive: true });
   await fs.cp(sourceScriptsDir, path.join(root, targetDir), { recursive: true });
