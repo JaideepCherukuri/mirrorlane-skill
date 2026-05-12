@@ -79,34 +79,65 @@ npm run build
 
 ## Guiding Principles
 
-### 1. Completeness Beats Speed
+### 0. Mirrorlane Preview Is The Parity Oracle
+
+The Mirrorlane hosted preview should already be close to the live site. Before
+building, measure live vs hosted preview screenshots. If live vs hosted preview
+is above 1% mismatch, document that capture limitation first. If hosted preview
+is under 1%, the generated Next.js clone must target the same threshold.
+
+Do not accept "close by eye." Use image diff numbers. The success gate is:
+
+- hosted preview vs live: record the baseline
+- local Next.js clone vs hosted preview: `<1%` mismatch
+- local Next.js clone vs live: `<1%` mismatch unless the hosted preview
+  baseline itself is above that threshold
+
+### 1. Artifact-First Reconstruction
+
+The clean ZIP is not mood-board material. Treat it as the source of exact
+truth for DOM hierarchy, CSS, fonts, media, SVGs, image crops, script-driven
+states, and route behavior. Start by mapping the clean ZIP's `site/`,
+`vendor/`, `data/`, and `metadata/url-map.json` into the Next.js project.
+
+The first implementation goal is a loss-minimized reconstruction of the first
+viewport using the captured DOM/CSS/assets. Only after the first viewport
+passes the `<1%` diff gate should you refactor that viewport into cleaner
+components. Refactor in small steps and rerun the diff after each step so
+componentization never destroys fidelity.
+
+Componentized does not mean hand-redesigned. Good components preserve the
+original DOM shape, CSS values, asset layering, and behavior while moving them
+into maintainable React files and typed content modules.
+
+### 2. Completeness Beats Speed
 
 Every builder must receive everything needed to build perfectly: screenshot,
 computed CSS values, local asset paths, real text, component structure, states,
 and behavior notes. If a builder has to guess a color, padding value, image, or
 trigger condition, extraction was incomplete.
 
-### 2. Small Tasks, Perfect Results
+### 3. Small Tasks, Perfect Results
 
 Break complex sections into focused component jobs. A simple banner can go to
 one builder; a section with several card types, hover states, and responsive
 layouts should be split into card builders plus a wrapper builder. If a builder
 prompt grows past about 150 lines of spec content, split the task.
 
-### 3. Real Content, Real Assets
+### 4. Real Content, Real Assets
 
 Use real text, images, videos, SVGs, and fonts from the Mirrorlane clean ZIP and
 live page inspection. Do not replace captured content with generic copy. Watch
 for layered compositions: one visual block may include a background image,
 foreground UI image, overlay icons, gradients, videos, and inline SVGs.
 
-### 4. Foundation First
+### 5. Foundation First
 
 Do not build sections before the foundation exists: fonts, design tokens,
 global CSS, metadata, asset conventions, TypeScript content types, and shared
 icons. This foundation is sequential work. Everything after it can be parallel.
 
-### 5. Extract Looks And Behavior
+### 6. Extract Looks And Behavior
 
 Websites are not still images. Extract computed appearance and behavior:
 scroll effects, hover states, click states, sticky headers, tab changes,
@@ -116,7 +147,7 @@ modals, accordions, and responsive layout changes.
 For every behavior, document the trigger, before state, after state, transition
 duration, easing, and implementation model.
 
-### 6. Identify The Interaction Model Before Building
+### 7. Identify The Interaction Model Before Building
 
 Before writing a spec for an interactive section, decide whether it is driven by
 scroll, clicks, hover, time, media playback, or a combination. Scroll slowly
@@ -124,20 +155,20 @@ first. If the section changes while scrolling, document the scroll mechanism
 before trying clicks. Do not build click-driven tabs when the original is
 scroll-driven, or vice versa.
 
-### 7. Extract Every State
+### 8. Extract Every State
 
 Default state is not enough. For tabs, pills, accordions, menus, cards,
 headers, and forms, capture every state. For scroll-dependent elements, capture
 computed styles before and after the trigger. For hover states, capture both
 states and the transition.
 
-### 8. Spec Files Are The Source Of Truth
+### 9. Spec Files Are The Source Of Truth
 
 Every component gets a spec file in `docs/research/components/` before any
 builder is dispatched. The builder receives the spec content inline in the
 prompt. The spec file persists as an audit trail.
 
-### 9. Build Must Always Compile
+### 10. Build Must Always Compile
 
 Every builder verifies `npx tsc --noEmit` before finishing. After merging
 builders, verify `npm run build`. Broken builds are not acceptable stopping
@@ -148,6 +179,26 @@ points.
 Use both the live site and Mirrorlane hosted preview from
 `docs/mirrorlane/<hostname>/mirrorlane-reference.json`. Use the clean ZIP as the
 primary local source for assets.
+
+### Baseline Parity Gate
+
+Before writing clone code, capture live and hosted-preview screenshots at the
+required viewports and compute diff percentages.
+
+Use the bundled helper scripts if this skill repo is available:
+
+```bash
+npm install -D playwright pixelmatch pngjs
+node skill/clone-website/scripts/capture-viewports.mjs <live-url> docs/design-references/<hostname>/live
+node skill/clone-website/scripts/capture-viewports.mjs <hosted-preview-url> docs/design-references/<hostname>/hosted
+node skill/clone-website/scripts/pixel-diff.mjs docs/design-references/<hostname>/hosted/desktop.png docs/design-references/<hostname>/live/desktop.png docs/design-references/<hostname>/diffs/hosted-live-desktop.png
+```
+
+Repeat for tablet and mobile. Save the JSON output in
+`docs/research/<hostname>/PARITY_BASELINE.md`.
+
+If hosted preview is below 1% mismatch but the local clone is not, the root
+cause is in the clone workflow, not Mirrorlane capture.
 
 ### Screenshots
 
@@ -206,20 +257,31 @@ Save this to `docs/research/<hostname>/PAGE_TOPOLOGY.md`.
 
 Do this yourself before dispatching builders:
 
-1. Configure fonts in `app/layout.tsx` using `next/font/google`,
+1. Read `docs/mirrorlane/<hostname>/clean/metadata/url-map.json` and identify
+   all first-viewport HTML, CSS, JS, fonts, images, SVGs, videos, and background
+   assets.
+2. Copy first-viewport assets from the clean ZIP into `public/<hostname>/`
+   without renaming away meaning.
+3. Port the original CSS values, variables, font faces, and keyframes before
+   writing JSX. The clone should inherit measured values, not approximate them.
+4. Configure fonts in `app/layout.tsx` using `next/font/google`,
    `next/font/local`, or CSS `@font-face` from local assets.
-2. Update `app/globals.css` with real tokens, background styles, keyframes,
+5. Update `app/globals.css` with real tokens, background styles, keyframes,
    page-level behavior, and utility classes.
-3. Create TypeScript content types in `types/` or `lib/content.ts`.
-4. Extract reusable inline SVGs into named React components.
-5. Copy needed images, videos, fonts, and icons from
+6. Create TypeScript content types in `types/` or `lib/content.ts`.
+7. Extract reusable inline SVGs into named React components.
+8. Copy needed images, videos, fonts, and icons from
    `docs/mirrorlane/<hostname>/clean/` into `public/` with understandable
    paths.
-6. Verify:
+9. Verify:
 
 ```bash
 npm run build
 ```
+
+Do not proceed to lower-page sections until the above-the-fold local clone
+passes the parity gate against hosted preview or has a written root-cause report
+with exact blockers.
 
 ## Asset Discovery Pattern
 
@@ -494,6 +556,36 @@ For every discrepancy:
 
 Repeat until the clone is pixel-matched or remaining differences are explicitly
 documented with evidence.
+
+### Root-Cause Loop For >1% Mismatch
+
+If any viewport exceeds 1% mismatch, stop adding new sections and diagnose.
+Create `docs/research/<hostname>/PARITY_ROOT_CAUSES.md` with this table:
+
+| Symptom | Evidence | Likely root cause | Fix | Retest result |
+| --- | --- | --- | --- | --- |
+
+Check these causes in order:
+
+1. **Asset path loss:** image/video/font exists in clean ZIP but was not copied
+   or mapped into `public/`.
+2. **CSS loss:** original CSS file, variable, keyframe, media query, or pseudo
+   element was not ported.
+3. **DOM-shape loss:** JSX simplified a wrapper, overlay, mask, absolute layer,
+   or stacking context that affects layout.
+4. **Font mismatch:** wrong family, weight, fallback, loading mode, or local
+   font source.
+5. **Viewport state mismatch:** screenshot was taken at a different scroll
+   position, cookie/banner state, animation frame, or loaded state.
+6. **Runtime behavior loss:** carousel, scroll animation, sticky state, tab,
+   menu, shader/canvas, or video behavior was not rebuilt.
+7. **Responsive breakpoint loss:** media queries were guessed instead of
+   extracted.
+8. **Third-party dependency loss:** a visible script-generated element was
+   ignored instead of recreated as local React behavior.
+
+Patch the highest-impact root cause first, then rerun the same screenshot diff.
+Do not continue broad implementation while the first viewport is failing.
 
 ## Pre-Dispatch Checklist
 

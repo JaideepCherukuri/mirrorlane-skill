@@ -4,6 +4,7 @@ import path from "node:path";
 const root = process.cwd();
 const source = path.join(root, "skill", "clone-website", "SKILL.md");
 const body = await fs.readFile(source, "utf8");
+const sourceScriptsDir = path.join(root, "skill", "clone-website", "scripts");
 
 const targets = [
   [".claude/skills/clone-website/SKILL.md", body],
@@ -24,6 +25,14 @@ for (const [target, content] of targets) {
   const filePath = path.join(root, target);
   await fs.mkdir(path.dirname(filePath), { recursive: true });
   await fs.writeFile(filePath, content, "utf8");
+}
+
+for (const targetDir of [
+  ".claude/skills/clone-website/scripts",
+  ".codex/skills/clone-website/scripts",
+]) {
+  await fs.rm(path.join(root, targetDir), { force: true, recursive: true });
+  await fs.cp(sourceScriptsDir, path.join(root, targetDir), { recursive: true });
 }
 
 console.log(`Synced ${targets.length} skill targets.`);
