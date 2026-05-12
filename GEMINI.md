@@ -66,6 +66,9 @@ mirrorlane reference <job-id> --out docs/mirrorlane/<hostname> --json
 
 6. Extract the clean ZIP into `docs/mirrorlane/<hostname>/clean/`. The folder
    should contain `mirrorlane-reference.json` and a `*-clean.zip`.
+   If the clean ZIP is missing or cannot be downloaded, stop and report the
+   Mirrorlane artifact failure. Do not substitute a live-site-only handcrafted
+   approximation; the clean ZIP is the primary source artifact for this skill.
 7. Verify the base Next.js project builds:
 
 ```bash
