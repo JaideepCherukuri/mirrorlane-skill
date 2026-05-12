@@ -45,6 +45,13 @@ User instructions override these defaults.
 mirrorlane auth --json
 ```
 
+If the CLI is not authenticated, run one of:
+
+```bash
+mirrorlane login
+mirrorlane login --api-key <mirrorlane-api-key>
+```
+
 4. For each URL, run Mirrorlane capture and wait for completion:
 
 ```bash

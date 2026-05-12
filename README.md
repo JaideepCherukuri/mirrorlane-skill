@@ -57,18 +57,57 @@ npm install
 npm link
 ```
 
-### 3. Configure Authentication
+### 3. Authenticate
 
-macOS or Linux:
+On first run, Mirrorlane prompts automatically:
+
+```bash
+mirrorlane
+```
+
+```text
+mirrorlane cli
+Capture, mirror, and rebuild websites with AI agents
+
+Welcome! To get started, authenticate with your Mirrorlane account.
+
+  1. Login with browser (recommended)
+  2. Enter API key manually
+
+Tip: You can also set MIRRORLANE_API_KEY environment variable
+
+Enter choice [1/2]:
+```
+
+Browser login:
+
+```bash
+mirrorlane login
+mirrorlane login --browser
+```
+
+Direct API key login:
+
+```bash
+mirrorlane login --api-key ml_live_...
+```
+
+Environment variable on macOS or Linux:
 
 ```bash
 export MIRRORLANE_API_KEY="ml_live_..."
 ```
 
-Windows PowerShell:
+Environment variable on Windows PowerShell:
 
 ```powershell
 $env:MIRRORLANE_API_KEY = "ml_live_..."
+```
+
+Per-command API key:
+
+```bash
+mirrorlane capture https://example.com --api-key ml_live_... --wait
 ```
 
 Verify the CLI can reach Mirrorlane:
@@ -192,10 +231,10 @@ project:
 
 ```text
 Use the mirrorlane-clone skill. Clone https://example.com with Mirrorlane.
-Use the Mirrorlane CLI to authenticate, capture the site, download the reference
-package, extract the clean ZIP, build a componentized Next.js/Tailwind project,
-and iterate with screenshot diffs until desktop, tablet, and mobile are under
-1% pixel mismatch.
+If needed, run mirrorlane login first. Use the Mirrorlane CLI to capture the
+site, download the reference package, extract the clean ZIP, build a
+componentized Next.js/Tailwind project, and iterate with screenshot diffs until
+desktop, tablet, and mobile are under 1% pixel mismatch.
 ```
 
 For Claude Code installations where the slash command is available:
@@ -227,6 +266,8 @@ repeatable validation.
 
 ```bash
 mirrorlane auth [--json] [--api-url <url>]
+mirrorlane login [--browser] [--api-key <key>] [--api-url <url>]
+mirrorlane logout
 mirrorlane capture <url> [--wait] [--timeout <seconds>] [--poll-interval <seconds>] [--json]
 mirrorlane status <job-id> [--json]
 mirrorlane download <job-id> --format clean|raw|deployable --out <file> [--json]
@@ -237,8 +278,16 @@ Environment variables:
 
 | Variable | Required | Description |
 | --- | --- | --- |
-| `MIRRORLANE_API_KEY` | Yes | API key generated in the Mirrorlane dashboard. |
+| `MIRRORLANE_API_KEY` | No | API key generated in the Mirrorlane dashboard. Overrides stored login. |
 | `MIRRORLANE_API_URL` | No | API base URL. Defaults to `https://mirrorlane.jaideepch.com`. |
+
+Credential priority:
+
+1. `--api-key` passed to a command.
+2. `MIRRORLANE_API_KEY`.
+3. Stored login from `mirrorlane login`.
+
+Stored credentials live at `~/.mirrorlane/config.json`.
 
 ## Supported Platforms
 

@@ -20,6 +20,7 @@ const requiredFiles = [
   "CLAUDE.md",
   "GEMINI.md",
   "bin/mirrorlane.mjs",
+  "lib/cli/auth.mjs",
   "starter/package.json",
 ];
 
@@ -41,6 +42,7 @@ const readme = await fs.readFile(path.join(root, "README.md"), "utf8");
 for (const phrase of [
   "name: mirrorlane-clone",
   "mirrorlane auth",
+  "mirrorlane login",
   "mirrorlane capture",
   "mirrorlane reference",
   "clean ZIP",
