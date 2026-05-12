@@ -119,6 +119,14 @@ pseudo-element hooks, ARIA attributes, and asset ordering. Import or port the
 original CSS cascade that applies to that DOM slice, including media queries,
 variables, keyframes, and `::before`/`::after` styles.
 
+Port the **used CSS slice**, not the entire site stylesheet. Full stylesheet
+dumps from WordPress/Webflow/Framer/Elementor sites often apply later-page
+rules, stale experiment rules, broad mobile overrides, or unrelated global
+resets that shift the first viewport. Start from the selectors that match the
+captured DOM slice plus required global tokens/font-face/keyframes. If a broad
+CSS import worsens the diff, treat that as CSS over-application and reduce the
+stylesheet to the matched first-viewport rules.
+
 Only after the exact port is under 1% mismatch may you improve maintainability:
 split the JSX into named components, move repeated text into typed content,
 rename local assets, and remove dead classes. After every cleanup step, rerun
@@ -331,6 +339,9 @@ port the captured DOM/CSS exactly enough to pass the diff gate.
    - pseudo-elements
    - media queries
    - keyframes and animation defaults
+   Avoid importing unrelated full-page CSS unless it has been proven not to
+   move the first viewport. A smaller matched-rule stylesheet is usually more
+   faithful than a full cascade dump.
 5. Replace source URLs with local `public/` asset paths using
    `metadata/url-map.json`.
 6. Build and diff against clean replay.
@@ -628,17 +639,20 @@ Check these causes in order:
    or mapped into `public/`.
 2. **CSS loss:** original CSS file, variable, keyframe, media query, or pseudo
    element was not ported.
-3. **DOM-shape loss:** JSX simplified a wrapper, overlay, mask, absolute layer,
+3. **CSS over-application:** too much of the source cascade was imported,
+   causing unrelated section rules, broad mobile overrides, or stale theme
+   defaults to move the first viewport.
+4. **DOM-shape loss:** JSX simplified a wrapper, overlay, mask, absolute layer,
    or stacking context that affects layout.
-4. **Font mismatch:** wrong family, weight, fallback, loading mode, or local
+5. **Font mismatch:** wrong family, weight, fallback, loading mode, or local
    font source.
-5. **Viewport state mismatch:** screenshot was taken at a different scroll
+6. **Viewport state mismatch:** screenshot was taken at a different scroll
    position, cookie/banner state, animation frame, or loaded state.
-6. **Runtime behavior loss:** carousel, scroll animation, sticky state, tab,
+7. **Runtime behavior loss:** carousel, scroll animation, sticky state, tab,
    menu, shader/canvas, or video behavior was not rebuilt.
-7. **Responsive breakpoint loss:** media queries were guessed instead of
+8. **Responsive breakpoint loss:** media queries were guessed instead of
    extracted.
-8. **Third-party dependency loss:** a visible script-generated element was
+9. **Third-party dependency loss:** a visible script-generated element was
    ignored instead of recreated as local React behavior.
 
 Patch the highest-impact root cause first, then rerun the same screenshot diff.
