@@ -6,17 +6,12 @@ Capture once with Mirrorlane. Rebuild with your coding agent.
 ![Node.js](https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg)
 ![Supported agents](https://img.shields.io/badge/agents-Claude%20Code%20%7C%20Codex%20%7C%20Cursor%20%7C%20Copilot%20%7C%20Windsurf-blue.svg)
 
-Mirrorlane Skill is a portable agent workflow and CLI for turning an authorized
-website capture into a componentized, production-grade Next.js/Tailwind rebuild.
-It gives AI coding agents a clean Mirrorlane reference package, strict
+Mirrorlane Skill is a portable agent workflow and CLI for reverse engineering public sites into a componentized, production-grade Next.js/Tailwind rebuild.
+It gives AI coding agents a clean reference package, strict
 pixel-parity instructions, viewport diff tooling, and platform-specific rule
 files for the major coding agents.
 
 The public skill is named `mirrorlane-clone`.
-
-The Mirrorlane capture engine stays server-side. Agents receive a sanitized
-reference package and clean ZIP that are useful for reconstruction, without
-exposing Mirrorlane worker, queue, browser, storage, or hosted-preview internals.
 
 ## What You Get
 
