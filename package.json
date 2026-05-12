@@ -1,0 +1,35 @@
+{
+  "name": "mirrorlane-skill",
+  "version": "0.1.0",
+  "description": "Public agent skill and thin CLI for using Mirrorlane website capture artifacts.",
+  "type": "module",
+  "bin": {
+    "mirrorlane": "./bin/mirrorlane.mjs"
+  },
+  "files": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    "README.md",
+    "bin",
+    "lib",
+    "skill",
+    ".claude",
+    ".codex",
+    ".cursor",
+    ".windsurf",
+    ".continue",
+    ".amazonq",
+    ".augment",
+    ".github",
+    "opencode",
+    "starter"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "node scripts/check.mjs && node bin/mirrorlane.mjs --help",
+    "sync": "node scripts/sync-skills.mjs"
+  }
+}
