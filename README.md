@@ -5,8 +5,8 @@ infrastructure.
 
 Mirrorlane keeps the capture engine server-side. Agents receive a clean ZIP and
 a sanitized reference package: enough to rebuild a production-grade
-Next.js/Tailwind project, without exposing Mirrorlane worker, queue, replay, or
-storage internals.
+Next.js/Tailwind project, without exposing Mirrorlane worker, queue, hosted
+preview, or storage internals.
 
 ## Quick Start
 
@@ -23,8 +23,8 @@ The reference command writes:
 - `mirrorlane-reference/mirrorlane-reference.json`
 - `mirrorlane-reference/<hostname>-clean.zip`
 
-Use the clean ZIP as the primary source artifact. Use the live site and replay
-URLs only to resolve ambiguity and validate behavior.
+Use the clean ZIP as the primary source artifact. Use the live site and hosted
+preview URLs only to resolve ambiguity and validate behavior.
 
 ## Agent Skill Locations
 

@@ -5,8 +5,9 @@ Apply these instructions when rebuilding a website from Mirrorlane artifacts.
 # Mirrorlane Website Clone Workflow
 
 Use Mirrorlane as the capture system of record. Do not reimplement crawling,
-asset capture, replay, network interception, or ZIP generation. Your job is to
-turn the approved Mirrorlane artifacts into maintainable application code.
+asset capture, hosted preview generation, network interception, or ZIP
+generation. Your job is to turn the approved Mirrorlane artifacts into
+maintainable application code.
 
 ## Hard Rules
 
@@ -14,8 +15,8 @@ turn the approved Mirrorlane artifacts into maintainable application code.
 - Use `mirrorlane capture <url> --wait` to create the reference.
 - Use `mirrorlane reference <job-id> --out <dir>` to download the sanitized
   reference package and clean ZIP.
-- Treat the clean ZIP as the primary artifact. Treat the live site and replay
-  URLs as validation references.
+- Treat the clean ZIP as the primary artifact. Treat the live site and hosted
+  preview URLs as validation references.
 - Never claim completion until the generated app builds and desktop/mobile
   screenshots have been compared against the reference.
 - Do not paste a captured HTML document as the final implementation. Build
@@ -68,8 +69,8 @@ Read `mirrorlane-reference.json` first. Build a short implementation brief:
 - scroll behavior, sticky elements, menus, dialogs, forms, hover states
 - likely dynamic or animated behaviors
 
-Use browser tools to inspect the replay URL and the live site when the ZIP does
-not answer a visual or interaction question.
+Use browser tools to inspect the hosted preview URL and the live site when the
+ZIP does not answer a visual or interaction question.
 
 ## Build Plan
 
