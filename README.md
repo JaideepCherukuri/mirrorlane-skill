@@ -312,9 +312,4 @@ to analyze.
 
 ## License and Attribution
 
-This repository is MIT licensed. Mirrorlane's hosted capture service and
-server-side infrastructure remain proprietary.
-
-The clone workflow is adapted from
-[JCodesMore/ai-website-cloner-template](https://github.com/JCodesMore/ai-website-cloner-template),
-which is MIT licensed. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+This repository is MIT licensed. 
