@@ -36,6 +36,9 @@ preview URLs only to resolve ambiguity and validate behavior.
 The source skill is `skill/clone-website/SKILL.md`. Run `npm run sync` after
 editing it.
 
+The clone workflow is adapted from JCodesMore's MIT-licensed
+`ai-website-cloner-template`; see `THIRD_PARTY_NOTICES.md`.
+
 ## Starter Project
 
 `starter/` is a small Next.js 16, React 19, TypeScript, Tailwind v4 app intended
